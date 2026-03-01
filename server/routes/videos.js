@@ -61,6 +61,12 @@ router.get('/:id', async (req, res) => {
       .populate('channelId', 'channelName');
 
     if (!video) {
+      // Return demo video if not found
+      const demoVideos = getDemoVideos();
+      const demoVideo = demoVideos.find(v => v._id === req.params.id);
+      if (demoVideo) {
+        return res.json(demoVideo);
+      }
       return res.status(404).json({ message: 'Video not found' });
     }
 
@@ -71,6 +77,12 @@ router.get('/:id', async (req, res) => {
     res.json(video);
   } catch (error) {
     console.error('Get video error:', error);
+    // Return demo video on error
+    const demoVideos = getDemoVideos();
+    const demoVideo = demoVideos.find(v => v._id === req.params.id);
+    if (demoVideo) {
+      return res.json(demoVideo);
+    }
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -260,6 +272,7 @@ const getDemoVideos = (category) => {
       _id: 'video01',
       title: 'Learn React in 30 Minutes',
       thumbnailUrl: 'https://i.ytimg.com/vi/Ke90Tje7VS0/maxresdefault.jpg',
+      videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
       description: 'A quick tutorial to get started with React.',
       channelId: { _id: 'channel01', channelName: 'Code with John' },
       channelName: 'Code with John',
@@ -273,6 +286,7 @@ const getDemoVideos = (category) => {
       _id: 'video02',
       title: 'JavaScript Fundamentals',
       thumbnailUrl: 'https://i.ytimg.com/vi/W6NZfCO5SIk/maxresdefault.jpg',
+      videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
       description: 'Master JavaScript from scratch.',
       channelId: { _id: 'channel01', channelName: 'Code with John' },
       channelName: 'Code with John',
@@ -286,6 +300,7 @@ const getDemoVideos = (category) => {
       _id: 'video03',
       title: 'CSS Crash Course',
       thumbnailUrl: 'https://i.ytimg.com/vi/yfoY53QXEnI/maxresdefault.jpg',
+      videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
       description: 'Learn CSS in one hour.',
       channelId: { _id: 'channel02', channelName: 'Web Dev Simplified' },
       channelName: 'Web Dev Simplified',
@@ -299,6 +314,7 @@ const getDemoVideos = (category) => {
       _id: 'video04',
       title: 'Node.js Tutorial',
       thumbnailUrl: 'https://i.ytimg.com/vi/Oe421EPjeBE/maxresdefault.jpg',
+      videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
       description: 'Build server-side applications.',
       channelId: { _id: 'channel01', channelName: 'Code with John' },
       channelName: 'Code with John',
@@ -312,6 +328,7 @@ const getDemoVideos = (category) => {
       _id: 'video05',
       title: 'MongoDB Complete Guide',
       thumbnailUrl: 'https://i.ytimg.com/vi/c2M-rlkkT5o/maxresdefault.jpg',
+      videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
       description: 'Everything you need to know about MongoDB.',
       channelId: { _id: 'channel03', channelName: 'Programming with Mosh' },
       channelName: 'Programming with Mosh',
@@ -325,6 +342,7 @@ const getDemoVideos = (category) => {
       _id: 'video06',
       title: 'Music for Coding',
       thumbnailUrl: 'https://i.ytimg.com/vi/jfKfPfyJRdk/maxresdefault.jpg',
+      videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
       description: 'Lo-fi beats to code to.',
       channelId: { _id: 'channel04', channelName: 'Lofi Girl' },
       channelName: 'Lofi Girl',
@@ -338,6 +356,7 @@ const getDemoVideos = (category) => {
       _id: 'video07',
       title: 'Python for Beginners',
       thumbnailUrl: 'https://i.ytimg.com/vi/_uQrJ0TkZlc/maxresdefault.jpg',
+      videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
       description: 'Learn Python from scratch.',
       channelId: { _id: 'channel05', channelName: 'Programming with Mosh' },
       channelName: 'Programming with Mosh',
@@ -351,6 +370,7 @@ const getDemoVideos = (category) => {
       _id: 'video08',
       title: 'Top 10 Gaming Moments 2024',
       thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
+      videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
       description: 'Best gaming moments of the year.',
       channelId: { _id: 'channel06', channelName: 'Gaming Hub' },
       channelName: 'Gaming Hub',
