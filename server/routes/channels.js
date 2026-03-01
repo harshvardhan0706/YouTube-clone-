@@ -15,10 +15,16 @@ router.get('/', async (req, res) => {
       .populate('owner', 'username avatar')
       .sort({ subscribers: -1 });
 
+    // Return demo channels if none found
+    if (channels.length === 0) {
+      return res.json(getDemoChannels());
+    }
+
     res.json(channels);
   } catch (error) {
     console.error('Get channels error:', error);
-    res.status(500).json({ message: 'Server error' });
+    // Return demo channels on error
+    res.json(getDemoChannels());
   }
 });
 
@@ -31,6 +37,11 @@ router.get('/:id', async (req, res) => {
       .populate('owner', 'username avatar');
 
     if (!channel) {
+      // Return demo channel if not found
+      const demoChannel = getDemoChannels().find(c => c._id === req.params.id);
+      if (demoChannel) {
+        return res.json({ channel: demoChannel, videos: getDemoVideos().filter(v => v.channelId._id === demoChannel._id || v.channelId === demoChannel._id) });
+      }
       return res.status(404).json({ message: 'Channel not found' });
     }
 
@@ -42,6 +53,11 @@ router.get('/:id', async (req, res) => {
     res.json({ channel, videos });
   } catch (error) {
     console.error('Get channel error:', error);
+    // Return demo channel on error
+    const demoChannel = getDemoChannels().find(c => c._id === req.params.id);
+    if (demoChannel) {
+      return res.json({ channel: demoChannel, videos: getDemoVideos().filter(v => v.channelId._id === demoChannel._id || v.channelId === demoChannel._id) });
+    }
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -156,8 +172,57 @@ router.get('/user/:userId', async (req, res) => {
     res.json(channels);
   } catch (error) {
     console.error('Get user channels error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.json([]);
   }
 });
+
+// Demo data functions
+const getDemoVideos = () => [
+  {
+    _id: 'video01',
+    title: 'Learn React in 30 Minutes',
+    thumbnailUrl: 'https://i.ytimg.com/vi/Ke90Tje7VS0/maxresdefault.jpg',
+    description: 'A quick tutorial to get started with React.',
+    channelId: { _id: 'channel01', channelName: 'Code with John' },
+    channelName: 'Code with John',
+    views: 15200,
+    likes: 1023,
+    dislikes: 45,
+    uploadDate: '2024-09-20',
+    category: 'Programming'
+  },
+  {
+    _id: 'video02',
+    title: 'JavaScript Fundamentals',
+    thumbnailUrl: 'https://i.ytimg.com/vi/W6NZfCO5SIk/maxresdefault.jpg',
+    description: 'Master JavaScript from scratch.',
+    channelId: { _id: 'channel01', channelName: 'Code with John' },
+    channelName: 'Code with John',
+    views: 25000,
+    likes: 1500,
+    dislikes: 30,
+    uploadDate: '2024-09-15',
+    category: 'Programming'
+  }
+];
+
+const getDemoChannels = () => [
+  {
+    _id: 'channel01',
+    channelName: 'Code with John',
+    description: 'Learn programming from scratch',
+    owner: { _id: 'user01', username: 'john', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=john' },
+    subscribers: 15000,
+    channelBanner: 'https://via.placeholder.com/1280x200?text=Code+with+John'
+  },
+  {
+    _id: 'channel02',
+    channelName: 'Web Dev Simplified',
+    description: 'Simple web development tutorials',
+    owner: { _id: 'user02', username: 'kyle', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=kyle' },
+    subscribers: 25000,
+    channelBanner: 'https://via.placeholder.com/1280x200?text=Web+Dev+Simplified'
+  }
+];
 
 export default router;

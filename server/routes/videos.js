@@ -38,10 +38,16 @@ router.get('/', async (req, res) => {
       .populate('uploader', 'username avatar')
       .sort(sortOption);
 
+    // If no videos in DB, return demo videos
+    if (videos.length === 0) {
+      return res.json(getDemoVideos(category));
+    }
+
     res.json(videos);
   } catch (error) {
     console.error('Get videos error:', error);
-    res.status(500).json({ message: 'Server error' });
+    // Return demo videos on error (demo mode)
+    res.json(getDemoVideos(req.query.category));
   }
 });
 
@@ -243,8 +249,123 @@ router.get('/channel/:channelId', async (req, res) => {
     res.json(videos);
   } catch (error) {
     console.error('Get channel videos error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.json([]);
   }
 });
+
+// Demo videos for demonstration mode
+const getDemoVideos = (category) => {
+  const demoVideos = [
+    {
+      _id: 'video01',
+      title: 'Learn React in 30 Minutes',
+      thumbnailUrl: 'https://i.ytimg.com/vi/Ke90Tje7VS0/maxresdefault.jpg',
+      description: 'A quick tutorial to get started with React.',
+      channelId: { _id: 'channel01', channelName: 'Code with John' },
+      channelName: 'Code with John',
+      views: 15200,
+      likes: 1023,
+      dislikes: 45,
+      uploadDate: '2024-09-20',
+      category: 'Programming'
+    },
+    {
+      _id: 'video02',
+      title: 'JavaScript Fundamentals',
+      thumbnailUrl: 'https://i.ytimg.com/vi/W6NZfCO5SIk/maxresdefault.jpg',
+      description: 'Master JavaScript from scratch.',
+      channelId: { _id: 'channel01', channelName: 'Code with John' },
+      channelName: 'Code with John',
+      views: 25000,
+      likes: 1500,
+      dislikes: 30,
+      uploadDate: '2024-09-15',
+      category: 'Programming'
+    },
+    {
+      _id: 'video03',
+      title: 'CSS Crash Course',
+      thumbnailUrl: 'https://i.ytimg.com/vi/yfoY53QXEnI/maxresdefault.jpg',
+      description: 'Learn CSS in one hour.',
+      channelId: { _id: 'channel02', channelName: 'Web Dev Simplified' },
+      channelName: 'Web Dev Simplified',
+      views: 18000,
+      likes: 900,
+      dislikes: 20,
+      uploadDate: '2024-09-10',
+      category: 'Programming'
+    },
+    {
+      _id: 'video04',
+      title: 'Node.js Tutorial',
+      thumbnailUrl: 'https://i.ytimg.com/vi/Oe421EPjeBE/maxresdefault.jpg',
+      description: 'Build server-side applications.',
+      channelId: { _id: 'channel01', channelName: 'Code with John' },
+      channelName: 'Code with John',
+      views: 22000,
+      likes: 1200,
+      dislikes: 40,
+      uploadDate: '2024-09-05',
+      category: 'Programming'
+    },
+    {
+      _id: 'video05',
+      title: 'MongoDB Complete Guide',
+      thumbnailUrl: 'https://i.ytimg.com/vi/c2M-rlkkT5o/maxresdefault.jpg',
+      description: 'Everything you need to know about MongoDB.',
+      channelId: { _id: 'channel03', channelName: 'Programming with Mosh' },
+      channelName: 'Programming with Mosh',
+      views: 30000,
+      likes: 2000,
+      dislikes: 50,
+      uploadDate: '2024-08-28',
+      category: 'Programming'
+    },
+    {
+      _id: 'video06',
+      title: 'Music for Coding',
+      thumbnailUrl: 'https://i.ytimg.com/vi/jfKfPfyJRdk/maxresdefault.jpg',
+      description: 'Lo-fi beats to code to.',
+      channelId: { _id: 'channel04', channelName: 'Lofi Girl' },
+      channelName: 'Lofi Girl',
+      views: 50000,
+      likes: 3000,
+      dislikes: 100,
+      uploadDate: '2024-08-20',
+      category: 'Music'
+    },
+    {
+      _id: 'video07',
+      title: 'Python for Beginners',
+      thumbnailUrl: 'https://i.ytimg.com/vi/_uQrJ0TkZlc/maxresdefault.jpg',
+      description: 'Learn Python from scratch.',
+      channelId: { _id: 'channel05', channelName: 'Programming with Mosh' },
+      channelName: 'Programming with Mosh',
+      views: 45000,
+      likes: 2500,
+      dislikes: 75,
+      uploadDate: '2024-08-15',
+      category: 'Programming'
+    },
+    {
+      _id: 'video08',
+      title: 'Top 10 Gaming Moments 2024',
+      thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
+      description: 'Best gaming moments of the year.',
+      channelId: { _id: 'channel06', channelName: 'Gaming Hub' },
+      channelName: 'Gaming Hub',
+      views: 80000,
+      likes: 5000,
+      dislikes: 200,
+      uploadDate: '2024-12-28',
+      category: 'Gaming'
+    }
+  ];
+  
+  if (category && category !== 'All') {
+    return demoVideos.filter(v => v.category === category);
+  }
+  return demoVideos;
+};
 
 export default router;

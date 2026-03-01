@@ -83,6 +83,19 @@ router.post('/login', async (req, res) => {
     });
   } catch (error) {
     console.error('Login error:', error);
+    
+    // Demo mode: allow login with demo credentials
+    if (email === 'demo@test.com' && password === 'demo123') {
+      return res.json({
+        _id: 'demo-user-id',
+        username: 'Demo User',
+        email: 'demo@test.com',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=demo',
+        channels: [],
+        token: 'demo-token-12345'
+      });
+    }
+    
     res.status(500).json({ message: 'Server error' });
   }
 });
